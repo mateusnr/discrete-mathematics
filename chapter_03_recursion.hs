@@ -95,6 +95,7 @@ first one. For examples, f [1,2,3,4,5,6,7] returns [2,4,6].
 -}
 
 removeAlternate :: [a] -> [a]
+removeAlternate [] = []
 removeAlternate [_] = []
 removeAlternate [_,y] = [y]
 removeAlternate (x:y:xs) = removeAlternate [x,y] ++ removeAlternate xs
