@@ -1,4 +1,3 @@
-import Prelude hiding ((!!), lookup)
 {- 
 Exercise 1. Write a recursive function copy :: [a] -> [a] that copies its
 list argument. For example, copy [2] ⇒[2].
@@ -43,11 +42,11 @@ merge (x:xs) (y:ys)
     [1,2,3]!!5 ==> Nothing
 -}
 
-(!!) :: [a] -> Int -> Maybe a
-(!!) [] _ = Nothing
-(!!) (x:xs) n 
+(!!!) :: [a] -> Int -> Maybe a
+(!!!) [] _ = Nothing
+(!!!) (x:xs) n 
     | n == 0 = Just x
-    | otherwise = (!!) xs (n-1)
+    | otherwise = (!!!) xs (n-1)
 
 {-
 Exercise 5. Write a function lookup that takes a value and a list of pairs,
@@ -58,10 +57,10 @@ lookup 5 [(1,2),(5,3)] ==> Just 3
 lookup 6 [(1,2),(5,3)] ==> Nothing
 -}
 
-lookup :: Eq a => a -> [(a, b)] -> Maybe b
-lookup _ [] = Nothing
-lookup n ((x, y):xs) = 
-    if x == n then Just y else lookup n xs
+lookup1 :: Eq a => a -> [(a, b)] -> Maybe b
+lookup1 _ [] = Nothing
+lookup1 n ((x, y):xs) = 
+    if x == n then Just y else lookup1 n xs
 
 {-
 Exercise 6. Write a function that counts the number of times an element
@@ -135,3 +134,103 @@ isSubstring' (x:xs) sub n =
 
 isSubstring :: String -> String -> Maybe Int
 isSubstring str substr = isSubstring' str substr 0
+
+{-
+    Exercise 11. Write foldrWith, a function that behaves like foldr except
+    that it takes a function of three arguments and two lists.
+-}  
+
+foldrWith :: (a -> b -> c -> c) -> c -> [a] -> [b] -> c
+foldrWith function z [] _ = z
+foldrWith function z _ [] = z
+foldrWith function z (x:xs) (y:ys) =
+    function x y (foldrWith function z xs ys)
+
+{-
+Exercise 12. Using foldr, write a function mappend such that
+mappend f xs = concat (map f xs)
+-}
+
+mappend :: (a -> [b]) -> [a] -> [b]
+mappend f l = foldr trf [] l
+    where trf xs l1 = f xs ++ l1
+
+{-
+Exercise 13. Write removeDuplicates, a function that takes a list and re-
+moves all of its duplicate elements.
+-}
+removeDuplicates :: Eq a => [a] -> [a]
+removeDupicates [] = []
+removeDuplicates [x] = [x]
+removeDuplicates (x:xs) =
+    if elem x xs then removeDuplicates xs else x : removeDuplicates xs
+
+ {-
+ Exercise 14. Write a recursive function that takes a value and a list of values
+and returns True if the value is in the list and False otherwise.
+ -}
+
+inList :: Eq a => a -> [a] -> Bool
+inList x [] = False
+inList el (x:xs) = if x == el then True else inList el xs
+
+{-
+Exercise 15. Write a function that takes two lists, and returns a list of values
+that appear in both lists. The function should have type intersection
+:: Eq a => [a] -> [a] -> [a]. (This is one way to implement the
+intersection operation on sets; see Chapter 8.)
+-}
+
+intersection :: Eq a => [a] -> [a] -> [a]
+intersection [] [] = []
+intersection _ [] = []
+intersection [] _ = []
+intersection (x:xs) list2 = 
+    if elem x list2 then x : intersection xs list2 else
+        intersection xs list2
+
+        
+{-
+Exercise 16. Write a function that takes two lists, and returns True if all the
+elements of the first list also occur in the other. The function should have 
+type isSubset :: Eq a => [a] -> [a] -> Bool.
+-}
+
+isSubset :: Eq a => [a] -> [a] -> Bool
+isSubset [] _ = True
+isSubset (x:xs) list2 = elem x list2 && isSubset xs list2
+
+{-
+Exercise 17. Write a recursive function that determines whether a list is
+sorted.
+-}
+
+isSorted :: Ord a => [a] -> Bool
+isSorted [] = True
+isSorted [x] = True
+isSorted [x,y] = x <= y
+isSorted (x:y:xs) = x <= y && isSorted xs
+
+
+{-
+Exercise 19. Using recursion, define last, a function that takes a list and
+returns a Maybe type that is Nothing if the list is empty.
+-}
+maybeLast :: [a] -> Maybe a
+maybeLast [] = Nothing
+maybeLast [x] = Just x
+maybeLast (x:xs) = maybeLast xs
+
+{-
+Exercise 20. Using recursion, write two functions that expect a string con-
+taining a number that contains a decimal point (for example, 23.455).
+The first function returns the whole part of the number (i.e., the part to
+the left of the decimal point). The second function returns the fractional
+part (the part to the right of the decimal point).
+-}
+
+getLeft :: String -> String
+getLeft num = takeWhile (/= '.') num
+
+getRight :: String -> String
+getRight num = tail . dropWhile (/= '.') $  num
