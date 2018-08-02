@@ -1,0 +1,22 @@
+\documentclass{article}
+
+\newcounter{problem}
+\setcounter{problem}{1}
+
+\parindent 0in
+\parskip 1em
+\begin{document} 
+\textbf{\arabic{problem}.} Let a be an arbitrary real number. Prove, for all natural numbers \textit{m} and \textit{n}, that \(a^{m \times n} = (a^m)^n\).
+
+\textbf{Answer:}
+
+Base case\newline \(a^{0 \times n}\ = (a^m)^0
+\newline1 = 1^n\)
+
+Induction case\newline
+\(a^{m(n+1)} = (a^m)^{n+1}\) \newline
+\(a^{mn + m} = (a^m)^{n+1}\) \newline
+\(a^{mn} \times a^m = (a^m)^{n+1}\) \newline
+\((a^m)^n \times a^m = (a^m)^{n+1}\)
+
+\end{document}
